@@ -19,7 +19,7 @@ const validateAdminProductsJWT = (req, res = response, next) => {
     )
 
     req.uid = id
-    req.name = name
+    req.uname = name
   } catch (error) {
     return res.status(401).json({
       ok: false,

@@ -1,7 +1,7 @@
 import { Schema, model } from 'mongoose'
 
 const ProductSchema = Schema({
-  title: {
+  name: {
     type: String,
     require: true,
     trim: true
@@ -11,34 +11,33 @@ const ProductSchema = Schema({
     require: true,
     trim: true
   },
-  imageUrl: {
+  image_url: {
     type: String,
     require: true,
-    trim: true
+    trim: true,
+    alias: 'imageUrl'
   },
   price: {
     type: Number,
-    require: true,
-    trim: true
+    require: true
   },
   category: {
     type: String,
     require: true,
     trim: true
   },
-  subCategory: {
+  sub_category: {
     type: String,
     require: true,
-    trim: true
+    trim: true,
+    alias: 'subCategory'
   },
   shipment: {
-    type: Object,
-    require: true,
-    trim: true
+    type: { shippingTime: String, shippingFrom: String },
+    require: true
   },
   keywords: {
-    type: Array,
-    trim: true
+    type: Array
   },
   stock: {
     type: Number,

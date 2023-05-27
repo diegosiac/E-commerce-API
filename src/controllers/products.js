@@ -1,7 +1,7 @@
 import { response, request } from 'express'
 import Product from '../models/Product.js'
 
-export const getProducts = async (req = request, res = response) => {
+export const getProducts = async (req = request, res = response, next) => {
   try {
     const products = await Product.find()
 
@@ -12,7 +12,7 @@ export const getProducts = async (req = request, res = response) => {
       })
     }
 
-    res.status(201).json({
+    res.status(200).json({
       ok: true,
       data: {
         products,
@@ -20,19 +20,15 @@ export const getProducts = async (req = request, res = response) => {
       }
     })
   } catch (error) {
-    console.log(error)
-    res.status(500).json({
-      ok: false,
-      msg: 'Please talk to the administrator'
-    })
+    next(error)
   }
 }
 
-export const getProductByIdAndTitle = async (req = request, res = response) => {
+export const getProductByIdAndTitle = async (req = request, res = response, next) => {
   try {
     const product = req.query.id
       ? await Product.findById(req.query.id)
-      : await Product.findOne({ title: req.query.title })
+      : await Product.findOne({ name: req.query.name })
 
     if (!product) {
       return res.status(404).json({
@@ -41,22 +37,18 @@ export const getProductByIdAndTitle = async (req = request, res = response) => {
       })
     }
 
-    res.status(201).json({
+    res.status(200).json({
       ok: true,
       data: {
         product
       }
     })
   } catch (error) {
-    console.log(error)
-    res.status(500).json({
-      ok: false,
-      msg: 'Please talk to the administrator'
-    })
+    next(error)
   }
 }
 
-export const getProductsByCategory = async (req = request, res = response) => {
+export const getProductsByCategory = async (req = request, res = response, next) => {
   const category = req.params.category
 
   try {
@@ -69,7 +61,7 @@ export const getProductsByCategory = async (req = request, res = response) => {
       })
     }
 
-    res.status(201).json({
+    res.status(200).json({
       ok: true,
       data: {
         category,
@@ -77,15 +69,11 @@ export const getProductsByCategory = async (req = request, res = response) => {
       }
     })
   } catch (error) {
-    console.log(error)
-    res.status(500).json({
-      ok: false,
-      msg: 'Please talk to the administrator'
-    })
+    next(error)
   }
 }
 
-export const createProduct = async (req = request, res = response) => {
+export const createProduct = async (req = request, res = response, next) => {
   try {
     const product = new Product(req.body)
     await product.save()
@@ -94,20 +82,16 @@ export const createProduct = async (req = request, res = response) => {
       ok: true,
       msg: 'The product was successfully saved',
       data: {
-        title: product.title,
+        name: product.name,
         id: product.id
       }
     })
   } catch (error) {
-    console.log(error)
-    res.status(500).json({
-      ok: false,
-      msg: 'Please talk to the administrator'
-    })
+    next(error)
   }
 }
 
-export const deleteProduct = async (req = request, res = response) => {
+export const deleteProduct = async (req = request, res = response, next) => {
   const productId = req.query.id
 
   try {
@@ -120,20 +104,16 @@ export const deleteProduct = async (req = request, res = response) => {
       })
     }
 
-    res.status(201).json({
+    res.status(200).json({
       ok: true,
       msg: 'The product was successfully removed'
     })
   } catch (error) {
-    console.log(error)
-    res.status(500).json({
-      ok: false,
-      msg: 'Please talk to the administrator'
-    })
+    next(error)
   }
 }
 
-export const updateProduct = async (req = request, res = response) => {
+export const updateProduct = async (req = request, res = response, next) => {
   const productId = req.query.id
 
   try {
@@ -153,10 +133,6 @@ export const updateProduct = async (req = request, res = response) => {
       }
     })
   } catch (error) {
-    console.log(error)
-    res.status(500).json({
-      ok: false,
-      msg: 'Please talk to the administrator'
-    })
+    next(error)
   }
 }

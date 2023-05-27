@@ -6,15 +6,15 @@ import { isValidID, isValidCategory, isContainIDorTitle } from '../helpers/index
 
 const router = Router()
 
-// router.use( validarJWT )
+// router.use(validateAdminProductsJWT)
 
 router.get('/', getProducts)
 
 router.get('/unique',
   [
-    query('id').optional().custom(isValidID).withMessage('The id is required, it must be of type number and must have 12 or 24 characters'),
-    query('title').optional().isLength({ min: 2 }),
-    query('id or the title').custom(isContainIDorTitle).withMessage('You must send the id or the title'),
+    query('id', 'The id is required, it must be of type number and must have 12 or 24 characters').optional().custom(isValidID),
+    query('name').optional().isLength({ min: 2 }),
+    query('id or the name', 'You must send the id or the name').custom(isContainIDorTitle),
     validateFields
   ],
   getProductByIdAndTitle
@@ -22,7 +22,7 @@ router.get('/unique',
 
 router.get('/category/:category',
   [
-    param('category').exists().custom(isValidCategory).withMessage('The category param is mandatory and must be valid'),
+    param('category', 'The category param is mandatory and must be valid').exists().custom(isValidCategory),
     validateFields
   ],
   getProductsByCategory
