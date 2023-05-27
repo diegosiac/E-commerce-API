@@ -1,21 +1,10 @@
 import axios from 'axios'
 import config from '../config.js'
-import { createTokenPPL } from '../helpers/createTokenPPL.js'
+import { cancelTransaction, createTokenPPL, createTransaction, executeTrasaction } from '../helpers/index.js'
 
 export const createPayment = async (req, res, next) => {
+  const { email, portal } = req
   const { items, totalValue } = req.body
-
-  // items: [
-  //   {
-  //     name,
-  //     description,
-  //     quantity,
-  //     unit_amount: {
-  //       currency_code: 'MXN',
-  //       value: price
-  //     }
-  //   }
-  // ]
 
   const orders = {
     intent: 'CAPTURE',
@@ -50,9 +39,10 @@ export const createPayment = async (req, res, next) => {
       }
     })
 
+    await createTransaction(items, totalValue, data, email, portal)
+
     res.status(201).json({
       ok: true,
-      tokenAuth,
       order: data
     })
   } catch (error) {
@@ -62,7 +52,6 @@ export const createPayment = async (req, res, next) => {
 
 export const executePayment = async (req, res, next) => {
   const { token, PayerID } = req.query
-
   try {
     const tokenAuth = await createTokenPPL()
 
@@ -71,6 +60,8 @@ export const executePayment = async (req, res, next) => {
         Authorization: `Bearer ${tokenAuth}`
       }
     })
+
+    await executeTrasaction(data, PayerID)
 
     res.status(201).json({
       ok: true,
@@ -83,19 +74,10 @@ export const executePayment = async (req, res, next) => {
 
 export const cancelPayment = async (req, res, next) => {
   const { token } = req.query
-
   try {
-    const tokenAuth = await createTokenPPL()
-
-    const { data } = await axios.post(`${config.API_PAYPAL}/v2/checkout/orders/${token}/capture`, {}, {
-      headers: {
-        Authorization: `Bearer ${tokenAuth}`
-      }
-    })
-
-    res.status(201).json({
-      ok: true,
-      data
+    await cancelTransaction(token)
+    res.status(200).json({
+      ok: true
     })
   } catch (error) {
     next(error)

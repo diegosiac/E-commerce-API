@@ -1,12 +1,13 @@
 import { Router } from 'express'
 import { param, query } from 'express-validator'
 import { getProducts, getProductByIdAndTitle, getProductsByCategory } from '../controllers/products.js'
+import { validatePortalJWT } from '../middlewares/validatePortalJWT.js'
 import validateFields from '../middlewares/validateFields.js'
 import { isValidID, isValidCategory, isContainIDorTitle } from '../helpers/index.js'
 
 const router = Router()
 
-// router.use(validateAdminProductsJWT)
+router.use(validatePortalJWT)
 
 router.get('/', getProducts)
 

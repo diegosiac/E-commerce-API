@@ -1,9 +1,12 @@
 import { Router } from 'express'
 import { check } from 'express-validator'
 import validateFields from '../middlewares/validateFields.js'
-import { createUser, loginUser } from '../controllers/auth.js'
+import { createAdminUser, loginAdminUser } from '../controllers/auth.js'
+import { validateAdminRegister } from '../helpers/validateAdminRegister.js'
 
 const router = Router()
+
+router.use(validateAdminRegister)
 
 router.post('/new',
   [
@@ -12,7 +15,7 @@ router.post('/new',
     check('password', 'The password must be 6 characters').isLength({ min: 6 }),
     validateFields
   ],
-  createUser
+  createAdminUser
 )
 
 router.post('/',
@@ -21,7 +24,7 @@ router.post('/',
     check('password', 'The password must be 6 characters').isLength({ min: 6 }),
     validateFields
   ],
-  loginUser
+  loginAdminUser
 )
 
 export default router

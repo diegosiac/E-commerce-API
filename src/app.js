@@ -3,6 +3,7 @@ import morgan from 'morgan'
 import cors from 'cors'
 import products from './routes/products.js'
 import adminProducts from './routes/adminProducs.js'
+import authAdmin from './routes/authAdmin.js'
 import auth from './routes/auth.js'
 import payments from './routes/payments.js'
 import { errorHandler, logErrors } from './middlewares/errosHandler.js'
@@ -24,6 +25,8 @@ app.use('/api/payments', payments)
 app.use('/api/admin/products', adminProducts)
 
 app.use('/api/auth', auth)
+
+app.use('/api/auth/admin', authAdmin)
 
 app.use(logErrors)
 app.use(errorHandler)

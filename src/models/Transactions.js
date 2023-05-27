@@ -2,12 +2,22 @@ import { Schema, model } from 'mongoose'
 import { DataProductSchema } from './DataProductSchema.js'
 
 const TransactionSchema = Schema({
-  transaccion_id: {
+  order_id: {
     type: String,
     require: true,
-    trim: true,
     unique: true,
-    alias: 'transaccionID'
+    alias: 'orderId'
+  },
+  transaccion_id: {
+    type: String,
+    trim: true,
+    require: false,
+    alias: 'transaccionId'
+  },
+  payer_id: {
+    type: String,
+    trim: true,
+    alias: 'payerId'
   },
   status: {
     type: String,
@@ -21,9 +31,13 @@ const TransactionSchema = Schema({
   },
   net_amout: {
     type: Number,
-    require: true,
     min: 1,
     alias: 'netAmount'
+  },
+  portal: {
+    type: String,
+    require: true,
+    trim: true
   },
   buyer_email: {
     type: String,

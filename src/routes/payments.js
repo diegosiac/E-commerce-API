@@ -3,10 +3,13 @@ import { check, query } from 'express-validator'
 import { cancelPayment, createPayment, executePayment } from '../controllers/payments.js'
 import validateFields from '../middlewares/validateFields.js'
 import { isValidQuantityProducts } from '../helpers/isValidQuantityProducts.js'
+import { validatePaymentsJWT } from '../middlewares/validatePaymentsJWT.js'
+import jwt from 'jsonwebtoken'
+import config from '../config.js'
 
 const router = Router()
 
-// router.use( validarJWT )
+router.use(validatePaymentsJWT)
 
 router.post('/',
   [
@@ -37,5 +40,15 @@ router.get('/cancel_payment',
   ],
   cancelPayment
 )
+
+router.get('/prueba', (req, res) => {
+  const user = jwt.sign({ uid: 'dasf', email: 'diego3550@hotmail.com' }, config.SECRET_JWT_SEED, { expiresIn: '3w' })
+  const portal = jwt.sign({ portal: 'webPage' }, config.SECRET_JWT_SEED_PORTAL, { expiresIn: '3w' })
+
+  res.json({
+    user,
+    portal
+  })
+})
 
 export default router
