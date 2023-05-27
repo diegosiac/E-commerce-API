@@ -1,5 +1,5 @@
 import { response } from 'express'
-import config from '../config'
+import config from '../config.js'
 
 export const validateAdminRegister = (req, res = response, next) => {
   const token = req.header('Authorization')
