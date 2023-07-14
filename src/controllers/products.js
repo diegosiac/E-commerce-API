@@ -1,5 +1,6 @@
 import { response, request } from 'express'
 import Product from '../models/Product.js'
+import { index } from '../algolia/config.js'
 
 export const getProducts = async (req = request, res = response, next) => {
   try {
@@ -77,6 +78,7 @@ export const createProduct = async (req = request, res = response, next) => {
   try {
     const product = new Product(req.body)
     await product.save()
+    index.saveObject(product).wait()
 
     res.status(201).json({
       ok: true,

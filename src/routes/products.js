@@ -7,7 +7,7 @@ import { isValidID, isValidCategory, isContainIDorTitle } from '../helpers/index
 
 const router = Router()
 
-router.use(validatePortalJWT)
+// router.use(validatePortalJWT)
 
 router.get('/', getProducts)
 

@@ -12,7 +12,7 @@ export const createUser = async (req, res = response, next) => {
     if (findUser) {
       return res.status(400).json({
         ok: false,
-        msg: 'The user already exists with that email'
+        msg: 'Un usuario ya existe con ese usuario'
       })
     }
 
@@ -20,16 +20,21 @@ export const createUser = async (req, res = response, next) => {
 
     const passwordhash = await bcrypt.hash(password, 10)
     user.password = passwordhash
-
-    const token = await generateAuthJWT(user.id, user.email)
+    const token = await generateAuthJWT({ email: user.email, name: user.name })
 
     await user.save()
 
     res.status(201).json({
       ok: true,
-      uid: user.id,
-      name: user.name,
-      token
+      user: {
+        token,
+        name: user.name,
+        email: user.email,
+        basket: {
+          products: user.basket
+        },
+        pucharses: user.pucharses || []
+      }
     })
   } catch (error) {
     next(error)
@@ -58,17 +63,44 @@ export const loginUser = async (req, res = response, next) => {
       })
     };
 
-    const token = await generateAuthJWT(user.id, user.email)
+    const token = await generateAuthJWT({ name: user.name, email: user.email })
 
     res.status(200).json({
       ok: true,
-      uid: user.id,
-      name: user.name,
-      token
+      user: {
+        token,
+        name: user.name,
+        email: user.email,
+        basket: {
+          products: user.basket
+        },
+        pucharses: user.pucharses || []
+      }
     })
   } catch (error) {
     next(error)
   }
+}
+
+export const revalidateToken = async (req, res = response, next) => {
+  const { name, email } = req
+  const token = await generateAuthJWT({ name, email })
+  const user = await User.findOne({ email })
+
+  console.log(user)
+
+  res.status(200).json({
+    ok: true,
+    user: {
+      token,
+      name,
+      email,
+      basket: {
+        products: user.basket
+      },
+      pucharses: user.pucharses || []
+    }
+  })
 }
 
 export const createAdminUser = async (req, res = response, next) => {

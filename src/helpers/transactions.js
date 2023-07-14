@@ -1,54 +1,56 @@
 import Transactions from '../models/Transactions.js'
+import User from '../models/User.js'
 import { statusTransaction } from './statusTransaction.js'
 
-export const createTransaction = async (items, totalValue, orderPaypal, buyerEmail, portal) => {
-  const listProducts = items.map(({ name, description, quantity, ...item }) => {
-    const newItem = {
-      name,
-      description,
-      quantity,
-      amount: item.unit_amount.value
-    }
-
-    return newItem
-  })
-
-  const totalProducts = items.reduce((accum, item) => accum + item.quantity, 0)
-
+export const createTransaction = async ({ address, orderId, items, email, value }) => {
   try {
     const body = {
-      orderId: orderPaypal.id,
-      status: statusTransaction.PENDING,
-      amount: totalValue,
-      portal,
-      buyerEmail,
-      totalProducts,
-      listProducts
+      orderId,
+      address,
+      listProducts: items,
+      buyerEmail: email,
+      amount: value,
+      status: statusTransaction.PENDING
     }
 
     const transactions = new Transactions(body)
 
     await transactions.save()
   } catch (error) {
-    throw new Error({
-      status: 'Error dataBase Transaction',
-      error
-    })
+    throw new Error('Error dataBase Transaction')
   }
 }
 
-export const executeTrasaction = async (orderPaypal, payerId) => {
-  const captures = orderPaypal.purchase_units[0].payments.captures[0]
-
+export const executeTrasaction = async ({ transaccionId, payerId, netAmount, orderId }) => {
   try {
-    const body = {
-      transaccion_id: captures.id,
-      payer_id: payerId,
-      status: statusTransaction.COMPLETE,
-      net_amout: captures.seller_receivable_breakdown.net_amount.value
+    const transaccion = await Transactions.findOne({ order_id: orderId })
+    const dateDelivery = new Date(transaccion.createdAt)
+
+    dateDelivery.setDate(dateDelivery.getDate() + 12)
+
+    const delivery = {
+      status: 'PROGRESS',
+      date: dateDelivery
     }
 
-    await Transactions.findOneAndUpdate({ order_id: orderPaypal.id }, body)
+    transaccion.transaccion_id = transaccionId
+    transaccion.payer_id = payerId
+    transaccion.status = statusTransaction.COMPLETE
+    transaccion.net_amout = netAmount
+    transaccion.delivery = delivery
+
+    const newPucharse = {
+      address: transaccion.address,
+      amount: transaccion.amount,
+      dateShop: transaccion.createdAt,
+      products: transaccion.list_products,
+      id: transaccion._id,
+      delivery
+    }
+
+    await User.findOneAndUpdate({ email: transaccion.buyer_email }, { $push: { pucharses: newPucharse }, basket: [] })
+
+    await transaccion.save()
   } catch (error) {
     throw new Error({
       status: 'Error dataBase Transaction',
@@ -57,13 +59,22 @@ export const executeTrasaction = async (orderPaypal, payerId) => {
   }
 }
 
-export const cancelTransaction = async (token) => {
+export const cancelTransaction = async ({ orderId }) => {
   try {
-    const body = {
-      status: statusTransaction.CANCEL
-    }
+    await Transactions.findOneAndDelete({ order_id: orderId })
+  } catch (error) {
+    throw new Error({
+      status: 'Error dataBase Transaction',
+      error
+    })
+  }
+}
 
-    await Transactions.findOneAndUpdate({ order_id: token }, body)
+export const consultTransaction = async ({ orderId }) => {
+  try {
+    const transaction = await Transactions.findOne({ order_id: orderId })
+
+    return transaction
   } catch (error) {
     throw new Error({
       status: 'Error dataBase Transaction',

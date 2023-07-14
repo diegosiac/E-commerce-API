@@ -8,6 +8,44 @@ const TransactionSchema = Schema({
     unique: true,
     alias: 'orderId'
   },
+  address: {
+    firstName: {
+      type: String,
+      required: true
+    },
+    lastName: {
+      type: String,
+      required: true
+    },
+    address1: {
+      type: String,
+      required: true
+    },
+    phoneNumber: {
+      type: String,
+      required: true
+    },
+    countryRegion: {
+      type: String,
+      required: true
+    },
+    zip: {
+      type: String,
+      required: true
+    },
+    state: {
+      type: String,
+      required: true
+    },
+    locality: {
+      type: String,
+      required: true
+    },
+    sublocality: {
+      type: String,
+      required: true
+    }
+  },
   transaccion_id: {
     type: String,
     trim: true,
@@ -34,27 +72,27 @@ const TransactionSchema = Schema({
     min: 1,
     alias: 'netAmount'
   },
-  portal: {
-    type: String,
-    require: true,
-    trim: true
-  },
   buyer_email: {
     type: String,
     require: true,
     trim: true,
     alias: 'buyerEmail'
   },
-  total_products: {
-    type: Number,
-    require: true,
-    min: 1,
-    alias: 'totalProducts'
-  },
   list_products: {
-    type: [DataProductSchema],
+    type: Array,
     require: true,
+    // TODO agregar el schema del array
     alias: 'listProducts'
+  },
+  delivery: {
+    status: {
+      type: String,
+      required: false
+    },
+    date: {
+      type: String,
+      required: false
+    }
   }
 
 }, {

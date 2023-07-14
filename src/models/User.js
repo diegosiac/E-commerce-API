@@ -1,4 +1,5 @@
 import { Schema, model } from 'mongoose'
+import { BasketUserSchema } from './BasketUserSchema.js'
 
 const UserSchema = Schema({
   name: {
@@ -13,6 +14,12 @@ const UserSchema = Schema({
   password: {
     type: String,
     require: true
+  },
+  basket: {
+    type: [BasketUserSchema]
+  },
+  pucharses: {
+    type: Array
   }
 }, {
   versionKey: false,

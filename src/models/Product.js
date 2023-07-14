@@ -11,15 +11,15 @@ const ProductSchema = Schema({
     require: true,
     trim: true
   },
-  image_url: {
+  thumbnail: {
     type: String,
     require: true,
-    trim: true,
-    alias: 'imageUrl'
+    trim: true
   },
-  price: {
+  value: {
     type: Number,
-    require: true
+    require: true,
+    min: 1
   },
   category: {
     type: String,
@@ -31,10 +31,6 @@ const ProductSchema = Schema({
     require: true,
     trim: true,
     alias: 'subCategory'
-  },
-  shipment: {
-    type: { shippingTime: String, shippingFrom: String },
-    require: true
   },
   keywords: {
     type: Array
