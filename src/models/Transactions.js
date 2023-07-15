@@ -79,9 +79,8 @@ const TransactionSchema = Schema({
     alias: 'buyerEmail'
   },
   list_products: {
-    type: Array,
+    type: [DataProductSchema],
     require: true,
-    // TODO agregar el schema del array
     alias: 'listProducts'
   },
   delivery: {

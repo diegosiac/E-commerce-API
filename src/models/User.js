@@ -1,5 +1,6 @@
 import { Schema, model } from 'mongoose'
 import { BasketUserSchema } from './BasketUserSchema.js'
+import { PucharseUserSchema } from './PucharseUserSchema.js'
 
 const UserSchema = Schema({
   name: {
@@ -19,7 +20,7 @@ const UserSchema = Schema({
     type: [BasketUserSchema]
   },
   pucharses: {
-    type: Array
+    type: [PucharseUserSchema]
   }
 }, {
   versionKey: false,

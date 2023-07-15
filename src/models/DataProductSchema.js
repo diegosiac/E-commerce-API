@@ -6,7 +6,7 @@ export const DataProductSchema = new Schema({
     required: true,
     trim: true
   },
-  description: {
+  thumbnail: {
     type: String,
     required: true,
     trim: true
@@ -16,9 +16,24 @@ export const DataProductSchema = new Schema({
     required: true,
     min: 1
   },
-  amount: {
+  value: {
     type: Number,
     required: true,
     min: 1
+  },
+  description: {
+    type: String,
+    required: true,
+    trim: true
+  },
+  category: {
+    type: String,
+    required: true,
+    trim: true
+  },
+  id_product: {
+    type: String,
+    required: true,
+    trim: true
   }
 })

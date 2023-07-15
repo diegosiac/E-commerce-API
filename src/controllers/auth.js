@@ -87,8 +87,6 @@ export const revalidateToken = async (req, res = response, next) => {
   const token = await generateAuthJWT({ name, email })
   const user = await User.findOne({ email })
 
-  console.log(user)
-
   res.status(200).json({
     ok: true,
     user: {

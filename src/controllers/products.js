@@ -4,7 +4,7 @@ import { index } from '../algolia/config.js'
 
 export const getProducts = async (req = request, res = response, next) => {
   try {
-    const products = await Product.find()
+    const products = await Product.find({ stock: { $gte: 1 } })
 
     if (products.length === 0) {
       return res.status(404).json({
@@ -16,8 +16,7 @@ export const getProducts = async (req = request, res = response, next) => {
     res.status(200).json({
       ok: true,
       data: {
-        products,
-        pagination: '1'
+        products
       }
     })
   } catch (error) {

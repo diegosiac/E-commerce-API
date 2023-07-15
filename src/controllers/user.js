@@ -64,10 +64,10 @@ export const consultOrder = async (req = request, res = response, next) => {
   try {
     const order = await consultTransaction({ orderId: req.query.orderId })
 
-    if (!order) res.status(404).json({ ok: false, msg: 'No order found' })
+    if (!order) return res.status(404).json({ ok: false, msg: 'No order found' })
 
     if (order.buyer_email !== email) {
-      res.status(403).json({
+      return res.status(403).json({
         ok: false,
         msg: 'You are not authorized to read the transaction'
       })

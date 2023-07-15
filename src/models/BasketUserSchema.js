@@ -25,6 +25,16 @@ export const BasketUserSchema = new Schema({
     type: Number,
     required: true
   },
+  description: {
+    type: String,
+    required: true,
+    trim: true
+  },
+  category: {
+    type: String,
+    required: true,
+    trim: true
+  },
   id_product: {
     type: String,
     required: true,
