@@ -6,17 +6,11 @@ export const getProducts = async (req = request, res = response, next) => {
   try {
     const products = await Product.find({ stock: { $gte: 1 } })
 
-    if (products.length === 0) {
-      return res.status(404).json({
-        ok: false,
-        msg: 'No products available'
-      })
-    }
-
     res.status(200).json({
       ok: true,
       data: {
-        products
+        products,
+        results: products.length > 0 ? products.length : 'No products available'
       }
     })
   } catch (error) {

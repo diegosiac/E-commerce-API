@@ -29,23 +29,20 @@ export const addProductBasket = async (req, res = response, next) => {
 
   try {
     const products = await Product.findById(body.id)
-    const user = await User.findOne({ email })
-
-    const { name, thumbnail, value, stock, id } = products
+    const { name, thumbnail, value, stock, id, description, category } = products
 
     const newProduct = {
       name,
       thumbnail,
       value,
-      quantity: 1,
       stock,
       id_product: id,
-      id: '64963881a9ab7991b9e4a7e8'
+      quantity: 1,
+      description,
+      category
     }
 
-    user.basket = [...user.basket, newProduct]
-
-    await user.save()
+    const user = await User.findOneAndUpdate({ email }, { $push: { basket: newProduct } }, { new: true })
 
     res.status(200).json({
       ok: true,
@@ -87,6 +84,26 @@ export const consultOrder = async (req = request, res = response, next) => {
       user: {
         order: newOrder
       }
+    })
+  } catch (error) {
+    next(error)
+  }
+}
+
+export const getTest = async (req = request, res = response, next) => {
+  try {
+    const products = await Product.find({})
+
+    products.forEach(product => {
+      console.log(JSON.stringify(product._id))
+
+      const id = product._id
+
+      console.log(String(id) === '64616ad459cb9cb0a56ae70c')
+    })
+
+    res.status(200).json({
+      ok: true
     })
   } catch (error) {
     next(error)

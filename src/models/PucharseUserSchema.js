@@ -1,5 +1,5 @@
 import { Schema } from 'mongoose'
-import { DataProductSchema } from './DataProductSchema'
+import { DataProductSchema } from './DataProductSchema.js'
 
 export const PucharseUserSchema = new Schema({
   address: {

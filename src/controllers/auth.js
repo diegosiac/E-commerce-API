@@ -2,7 +2,7 @@ import { response } from 'express'
 import bcrypt from 'bcryptjs'
 import User from '../models/User.js'
 import UserAdmin from '../models/UserAdmin.js'
-import { generateAuthJWT, generateAdminJWT } from '../helpers/index.js'
+import { generateAuthJWT, generateAdminJWT, getUpdatedProducts } from '../helpers/index.js'
 
 export const createUser = async (req, res = response, next) => {
   const { email, password } = req.body
@@ -65,6 +65,11 @@ export const loginUser = async (req, res = response, next) => {
 
     const token = await generateAuthJWT({ name: user.name, email: user.email })
 
+    const products = await getUpdatedProducts(user.basket)
+
+    user.basket = products
+
+    await user.save()
     res.status(200).json({
       ok: true,
       user: {
@@ -87,6 +92,11 @@ export const revalidateToken = async (req, res = response, next) => {
   const token = await generateAuthJWT({ name, email })
   const user = await User.findOne({ email })
 
+  const products = await getUpdatedProducts(user.basket)
+
+  user.basket = products
+
+  await user.save()
   res.status(200).json({
     ok: true,
     user: {

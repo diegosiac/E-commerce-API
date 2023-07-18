@@ -11,9 +11,9 @@ export const createPayment = async (req, res, next) => {
   try {
     const user = await User.findOne({ email })
 
-    const country = COUNTRIES.find(item => item.label === countryRegion)
+    const products = user.basket.filter(item => item.stock > 0)
 
-    const items = user.basket.map(({ name, value, quantity }) => {
+    const items = products.map(({ name, value, quantity }) => {
       return {
         name,
         description: `${name}. Producto de GeekMobile`,
@@ -25,7 +25,9 @@ export const createPayment = async (req, res, next) => {
       }
     })
 
-    const value = user.basket.reduce((accum, item) => accum + (item.value * item.quantity), 0)
+    const value = products.reduce((accum, item) => accum + (item.value * item.quantity), 0)
+
+    const country = COUNTRIES.find(item => item.label === countryRegion)
 
     const order = {
       intent: 'CAPTURE',
@@ -79,7 +81,7 @@ export const createPayment = async (req, res, next) => {
       }
     })
 
-    await createTransaction({ address: req.body.address, orderId: data.id, items: user.basket, email, value })
+    await createTransaction({ address: req.body.address, orderId: data.id, items: products, email, value })
 
     res.status(201).json({
       ok: true,
@@ -88,7 +90,6 @@ export const createPayment = async (req, res, next) => {
       }
     })
   } catch (error) {
-    console.log(error.response.data)
     next(error)
   }
 }
