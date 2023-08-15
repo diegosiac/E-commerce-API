@@ -8,6 +8,7 @@ import auth from './routes/auth.js'
 import user from './routes/user.js'
 import payments from './routes/payments.js'
 import search from './routes/search.js'
+import admin from './routes/admin.js'
 import { errorHandler, logErrors } from './middlewares/errosHandler.js'
 
 const app = express()
@@ -26,13 +27,15 @@ app.use('/api/search', search)
 
 app.use('/api/payments', payments)
 
-app.use('/api/admin/products', adminProducts)
-
 app.use('/api/auth', auth)
 
 app.use('/api/user', user)
 
-app.use('/api/auth/admin', authAdmin)
+app.use('/api/admin/products', adminProducts)
+
+app.use('/api/admin/auth', authAdmin)
+
+app.use('/api/admin', admin)
 
 app.use(logErrors)
 app.use(errorHandler)

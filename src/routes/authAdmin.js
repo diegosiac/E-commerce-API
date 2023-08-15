@@ -1,7 +1,7 @@
 import { Router } from 'express'
 import { check } from 'express-validator'
 import validateFields from '../middlewares/validateFields.js'
-import { createAdminUser, loginAdminUser } from '../controllers/auth.js'
+import { createAdminUser, revalidateTokenAdmin } from '../controllers/auth.js'
 import { validateAdminRegister } from '../helpers/validateAdminRegister.js'
 
 const router = Router()
@@ -24,7 +24,7 @@ router.post('/',
     check('password', 'The password must be 6 characters').isLength({ min: 6 }),
     validateFields
   ],
-  loginAdminUser
+  revalidateTokenAdmin
 )
 
 export default router

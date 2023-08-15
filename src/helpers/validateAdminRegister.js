@@ -14,7 +14,7 @@ export const validateAdminRegister = (req, res = response, next) => {
   if (token !== config.SECRET_AUTH_ADMIN) {
     return res.status(401).json({
       ok: false,
-      msg: 'Invalid token Authorization'
+      msg: 'Invalid token Authorization asdf'
     })
   }
 

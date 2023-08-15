@@ -4,13 +4,13 @@ import { index } from '../algolia/config.js'
 
 export const getProducts = async (req = request, res = response, next) => {
   try {
-    const products = await Product.find({ stock: { $gte: 1 } })
+    const products = await Product.find({ stock: { $gte: 1 } }).select('-createdAt -updatedAt')
 
     res.status(200).json({
       ok: true,
       data: {
         products,
-        results: products.length > 0 ? products.length : 'No products available'
+        results: products.length > 0 ? products.length : 'NO PRODUCTS AVAILABLE'
       }
     })
   } catch (error) {
@@ -70,13 +70,24 @@ export const getProductsByCategory = async (req = request, res = response, next)
 export const createProduct = async (req = request, res = response, next) => {
   try {
     const product = new Product(req.body)
-    await product.save()
-    index.saveObject(product).wait()
 
+    const { name, description, thumbnail, value, stock, _id, category } = product.toObject()
+
+    await index.saveObject({
+      name,
+      description,
+      thumbnail,
+      value,
+      stock,
+      category,
+      objectID: _id
+    })
+
+    await product.save()
     res.status(201).json({
       ok: true,
-      msg: 'The product was successfully saved',
       data: {
+        msg: 'The product was successfully saved',
         name: product.name,
         id: product.id
       }
@@ -98,6 +109,7 @@ export const deleteProduct = async (req = request, res = response, next) => {
         msg: 'There is no product with the provided id'
       })
     }
+    index.deleteObject(productId).wait()
 
     res.status(200).json({
       ok: true,
@@ -112,7 +124,7 @@ export const updateProduct = async (req = request, res = response, next) => {
   const productId = req.query.id
 
   try {
-    const product = await Product.findByIdAndUpdate(productId, req.body, { new: true })
+    const product = await Product.findByIdAndUpdate(productId, req.body, { new: true }).select('-createdAt -updatedAt')
 
     if (!product) {
       return res.status(404).json({
@@ -120,6 +132,18 @@ export const updateProduct = async (req = request, res = response, next) => {
         msg: 'There is no product with the provided id'
       })
     }
+
+    const { name, description, thumbnail, value, stock, _id, category } = product.toObject()
+
+    index.saveObject({
+      name,
+      description,
+      thumbnail,
+      value,
+      stock,
+      category,
+      objectID: _id
+    }).wait()
 
     res.status(201).json({
       ok: true,

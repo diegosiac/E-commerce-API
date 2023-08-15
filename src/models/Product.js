@@ -26,14 +26,12 @@ const ProductSchema = Schema({
     require: true,
     trim: true
   },
-  sub_category: {
-    type: String,
-    require: true,
-    trim: true,
-    alias: 'subCategory'
-  },
   keywords: {
-    type: Array
+    type: [String],
+    validate: {
+      validator: (value) => Array.isArray(value) && value.every(item => typeof item === 'string'),
+      message: 'The field must be an array that only contains elements of type String.'
+    }
   },
   stock: {
     type: Number,

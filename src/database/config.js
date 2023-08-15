@@ -3,8 +3,6 @@ import config from '../config.js'
 
 const dbConnection = async () => {
   try {
-    // mongoose.set('strictQuery', false)
-
     await mongoose.connect(config.DB_CNN, {
       useNewUrlParser: true,
       useUnifiedTopology: true

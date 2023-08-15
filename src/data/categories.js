@@ -1,40 +1,11 @@
-export const categories = {
-  VITAMINASMINERALES: {
-    name: 'VITAMINAS Y MINERALES',
-    subCategories: {
-      MINERALES: 'Minerales',
-      VITAMINAS: 'Vitaminas'
-    }
+export const CATEGORIES = {
+  REPAIRS: {
+    name: 'REPAIRS'
   },
-  HERBALES: {
-    name: 'HERBALES',
-    subCategories: {
-      HERBAL: 'Herbal',
-      TES: 'Tés'
-    }
+  COMPONENTS: {
+    name: 'COMPONENTS'
   },
-  BALANCE: {
-    name: 'BALANCE',
-    subCategories: {
-      KETO: 'Keto',
-      GELESCORPORALES: 'Geles corporales'
-    }
-  },
-  CUIDADOPERSONAL: {
-    name: 'CUIDADO PERSONAL',
-    subCategories: {
-      COLAGENO: 'Colágeno',
-      BIOTINA: 'Biotina',
-      CREAMASCORPORALES: 'Cremas Corporales'
-    }
-  },
-  DESEMPEÑO: {
-    name: 'DESEMPEÑO',
-    subCategories: {
-      CREATINAS: 'Creatinas',
-      GELES: 'Geles',
-      PREENTRENADORES: 'Pre-entrenadores',
-      AMINOACIDOS: 'Aminoácidos'
-    }
+  DEVICES: {
+    name: 'DEVICES'
   }
 }

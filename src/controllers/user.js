@@ -89,23 +89,3 @@ export const consultOrder = async (req = request, res = response, next) => {
     next(error)
   }
 }
-
-export const getTest = async (req = request, res = response, next) => {
-  try {
-    const products = await Product.find({})
-
-    products.forEach(product => {
-      console.log(JSON.stringify(product._id))
-
-      const id = product._id
-
-      console.log(String(id) === '64616ad459cb9cb0a56ae70c')
-    })
-
-    res.status(200).json({
-      ok: true
-    })
-  } catch (error) {
-    next(error)
-  }
-}

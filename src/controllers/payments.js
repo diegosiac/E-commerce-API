@@ -13,6 +13,8 @@ export const createPayment = async (req, res, next) => {
 
     const products = user.basket.filter(item => item.stock > 0)
 
+    const country = COUNTRIES.find(item => item.label === countryRegion)
+
     const items = products.map(({ name, value, quantity }) => {
       return {
         name,
@@ -26,8 +28,6 @@ export const createPayment = async (req, res, next) => {
     })
 
     const value = products.reduce((accum, item) => accum + (item.value * item.quantity), 0)
-
-    const country = COUNTRIES.find(item => item.label === countryRegion)
 
     const order = {
       intent: 'CAPTURE',

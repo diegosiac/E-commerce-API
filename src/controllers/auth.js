@@ -54,7 +54,7 @@ export const loginUser = async (req, res = response, next) => {
       })
     }
 
-    const validPassword = bcrypt.compareSync(password, user.password)
+    const validPassword = await bcrypt.compare(password, user.password)
 
     if (!validPassword) {
       return res.status(400).json({
@@ -89,26 +89,30 @@ export const loginUser = async (req, res = response, next) => {
 
 export const revalidateToken = async (req, res = response, next) => {
   const { name, email } = req
-  const token = await generateAuthJWT({ name, email })
-  const user = await User.findOne({ email })
+  try {
+    const token = await generateAuthJWT({ name, email })
+    const user = await User.findOne({ email })
+    const products = await getUpdatedProducts(user.basket)
 
-  const products = await getUpdatedProducts(user.basket)
+    user.basket = products
 
-  user.basket = products
+    await user.save()
 
-  await user.save()
-  res.status(200).json({
-    ok: true,
-    user: {
-      token,
-      name,
-      email,
-      basket: {
-        products: user.basket
-      },
-      pucharses: user.pucharses || []
-    }
-  })
+    res.status(200).json({
+      ok: true,
+      user: {
+        token,
+        name,
+        email,
+        basket: {
+          products: user.basket
+        },
+        pucharses: user.pucharses || []
+      }
+    })
+  } catch (error) {
+    next(error)
+  }
 }
 
 export const createAdminUser = async (req, res = response, next) => {
@@ -134,16 +138,18 @@ export const createAdminUser = async (req, res = response, next) => {
 
     res.status(201).json({
       ok: true,
-      uid: userAdmin.id,
-      name: userAdmin.name,
-      token
+      user: {
+        uid: userAdmin.id,
+        name: userAdmin.name,
+        token
+      }
     })
   } catch (error) {
     next(error)
   }
 }
 
-export const loginAdminUser = async (req, res = response, next) => {
+export const revalidateTokenAdmin = async (req, res = response, next) => {
   const { email, password } = req.body
 
   try {
@@ -156,7 +162,7 @@ export const loginAdminUser = async (req, res = response, next) => {
       })
     }
 
-    const validPassword = bcrypt.compareSync(password, user.password)
+    const validPassword = await bcrypt.compare(password, user.password)
 
     if (!validPassword) {
       return res.status(400).json({
@@ -169,9 +175,10 @@ export const loginAdminUser = async (req, res = response, next) => {
 
     res.status(200).json({
       ok: true,
-      uid: user.id,
-      name: user.name,
-      token
+      user: {
+        name: user.name,
+        token
+      }
     })
   } catch (error) {
     next(error)

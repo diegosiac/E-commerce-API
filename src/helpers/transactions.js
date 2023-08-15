@@ -1,3 +1,4 @@
+import { index } from '../algolia/config.js'
 import Product from '../models/Product.js'
 import Transactions from '../models/Transactions.js'
 import User from '../models/User.js'
@@ -24,7 +25,7 @@ export const createTransaction = async ({ address, orderId, items, email, value 
 
 export const executeTrasaction = async ({ transaccionId, payerId, netAmount, orderId }) => {
   try {
-    const products = await Product.find({})
+    const products = await Product.find({}).select('-createdAt -updatedAt')
     const transaccion = await Transactions.findOne({ order_id: orderId })
     const dateDelivery = new Date(transaccion.createdAt)
 
@@ -33,6 +34,8 @@ export const executeTrasaction = async ({ transaccionId, payerId, netAmount, ord
 
       if (item) {
         product.stock -= item.quantity
+        index.saveObject({ ...product, objectID: product.id }).wait()
+
         await product.save()
       }
     }))

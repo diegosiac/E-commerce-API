@@ -1,13 +1,13 @@
-import { categories } from '../data/categories.js'
+import { CATEGORIES } from '../data/categories.js'
 
 export const isValidCategory = (value, { req }) => {
   const category = value.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toUpperCase()
 
-  const isExist = categories[category]
+  const isValid = CATEGORIES[category]
 
-  if (!isExist) return false
+  if (!isValid) return false
 
-  req.body.category = isExist
+  req.body.category = isValid.name
 
   return true
 }
