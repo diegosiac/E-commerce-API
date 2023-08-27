@@ -23,22 +23,26 @@ export const createTransaction = async ({ address, orderId, items, email, value 
   }
 }
 
-export const executeTrasaction = async ({ transaccionId, payerId, netAmount, orderId }) => {
+export const executeTransaction = async ({ transactionId, payerId, netAmount, transaction }) => {
   try {
-    const products = await Product.find({}).select('-createdAt -updatedAt')
-    const transaccion = await Transactions.findOne({ order_id: orderId })
-    const dateDelivery = new Date(transaccion.createdAt)
+    await Promise.all(transaction.list_products.map(async (item) => {
+      const product = await Product.findByIdAndUpdate(item.id_product,
+        { $inc: { stock: -item.quantity } },
+        { new: true }
+      )
 
-    Promise.all(products.map(async (product) => {
-      const item = transaccion.list_products.find((doc) => doc.id_product === String(product._id))
-
-      if (item) {
-        product.stock -= item.quantity
-        index.saveObject({ ...product, objectID: product.id }).wait()
-
-        await product.save()
-      }
+      await index.saveObject({
+        name: product.name,
+        description: product.description,
+        thumbnail: product.thumbnail,
+        value: product.value,
+        stock: product.stock,
+        category: product.category,
+        objectID: product.id
+      })
     }))
+
+    const dateDelivery = new Date(transaction.createdAt)
 
     dateDelivery.setDate(dateDelivery.getDate() + 12)
 
@@ -47,30 +51,30 @@ export const executeTrasaction = async ({ transaccionId, payerId, netAmount, ord
       date: dateDelivery
     }
 
-    transaccion.transaccion_id = transaccionId
-    transaccion.payer_id = payerId
-    transaccion.status = statusTransaction.COMPLETE
-    transaccion.net_amout = netAmount
-    transaccion.delivery = delivery
+    transaction.transaccion_id = transactionId
+    transaction.payer_id = payerId
+    transaction.status = statusTransaction.COMPLETE
+    transaction.net_amout = netAmount
+    transaction.delivery = delivery
 
     const newPurchase = {
-      address: transaccion.address,
-      amount: transaccion.amount,
-      dateShop: transaccion.createdAt,
-      products: transaccion.list_products,
-      id: transaccion._id,
+      address: transaction.address,
+      amount: transaction.amount,
+      dateShop: transaction.createdAt,
+      products: transaction.list_products,
+      _id: transaction._id,
       delivery
     }
 
     await User.findOneAndUpdate(
-      { email: transaccion.buyer_email },
+      { email: transaction.buyer_email },
       {
         $push: { pucharses: { $each: [newPurchase], $position: 0 } },
         basket: []
       }
     )
 
-    await transaccion.save()
+    await transaction.save()
   } catch (error) {
     throw new Error('Error dataBase Transaction')
   }

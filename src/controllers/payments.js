@@ -2,7 +2,8 @@ import { response } from 'express'
 import axios from 'axios'
 import config from '../config.js'
 import User from '../models/User.js'
-import { COUNTRIES, cancelTransaction, createTokenPPL, createTransaction, executeTrasaction } from '../helpers/index.js'
+import { COUNTRIES, cancelTransaction, createTokenPPL, createTransaction, executeTransaction } from '../helpers/index.js'
+import Transactions from '../models/Transactions.js'
 
 export const createPayment = async (req, res, next) => {
   const { email } = req
@@ -64,11 +65,11 @@ export const createPayment = async (req, res, next) => {
         }
       }],
       application_context: {
-        brand_name: 'geekMobile.com',
+        brand_name: 'GeekMobile',
         landing_page: 'NO_PREFERENCE',
         user_action: 'PAY_NOW',
-        return_url: 'http://localhost:3000/api/payments/execute_payment',
-        cancel_url: 'http://localhost:3000/api/payments/cancel_payment',
+        return_url: `${config.URL_BACK}/api/payments/execute_payment`,
+        cancel_url: `${config.URL_BACK}/api/payments/cancel_payment`,
         shipping_preference: 'SET_PROVIDED_ADDRESS'
       }
     }
@@ -97,6 +98,15 @@ export const createPayment = async (req, res, next) => {
 export const executePayment = async (req, res = response, next) => {
   const { token, PayerID } = req.query
   try {
+    const transaction = await Transactions.findOne({ order_id: token })
+
+    if (!transaction) {
+      return res.status(400).json({
+        ok: false,
+        msg: 'The token is invalid'
+      })
+    }
+
     const tokenAuth = await createTokenPPL()
 
     const { data } = await axios.post(`${config.API_PAYPAL}/v2/checkout/orders/${token}/capture`, {}, {
@@ -107,14 +117,14 @@ export const executePayment = async (req, res = response, next) => {
 
     const capture = data.purchase_units[0].payments.captures[0]
 
-    await executeTrasaction({
-      transaccionId: capture.id,
+    await executeTransaction({
+      transactionId: capture.id,
       payerId: PayerID,
       netAmount: capture.seller_receivable_breakdown.net_amount.value,
-      orderId: token
+      transaction
     })
 
-    res.redirect(`http://localhost:5173/checkout/execute_payment?id=${token}`)
+    res.redirect(`${config.URL_FRONT}/checkout/execute_payment?id=${token}`)
   } catch (error) {
     next(error)
   }
@@ -124,7 +134,7 @@ export const cancelPayment = async (req, res, next) => {
   const { token } = req.query
   try {
     await cancelTransaction({ orderId: token })
-    res.redirect('http://localhost:5173/cart')
+    res.redirect(`${config.URL_FRONT}/cart`)
   } catch (error) {
     next(error)
   }

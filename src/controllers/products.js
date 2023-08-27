@@ -10,7 +10,7 @@ export const getProducts = async (req = request, res = response, next) => {
       ok: true,
       data: {
         products,
-        results: products.length > 0 ? products.length : 'NO PRODUCTS AVAILABLE'
+        results: products.length
       }
     })
   } catch (error) {
@@ -18,11 +18,9 @@ export const getProducts = async (req = request, res = response, next) => {
   }
 }
 
-export const getProductByIdAndTitle = async (req = request, res = response, next) => {
+export const getProductById = async (req = request, res = response, next) => {
   try {
-    const product = req.query.id
-      ? await Product.findById(req.query.id)
-      : await Product.findOne({ name: req.query.name })
+    const product = await Product.findById(req.query.id).select('-createdAt -updatedAt')
 
     if (!product) {
       return res.status(404).json({
@@ -46,14 +44,7 @@ export const getProductsByCategory = async (req = request, res = response, next)
   const category = req.params.category
 
   try {
-    const products = await Product.find({ category })
-
-    if (products.length === 0) {
-      return res.status(404).json({
-        ok: false,
-        msg: 'There are no products with the category provided'
-      })
-    }
+    const products = await Product.find({ category }).select('-createdAt -updatedAt')
 
     res.status(200).json({
       ok: true,
@@ -88,8 +79,8 @@ export const createProduct = async (req = request, res = response, next) => {
       ok: true,
       data: {
         msg: 'The product was successfully saved',
-        name: product.name,
-        id: product.id
+        name,
+        id: _id
       }
     })
   } catch (error) {
@@ -109,7 +100,8 @@ export const deleteProduct = async (req = request, res = response, next) => {
         msg: 'There is no product with the provided id'
       })
     }
-    index.deleteObject(productId).wait()
+
+    await index.deleteObject(productId)
 
     res.status(200).json({
       ok: true,
@@ -135,7 +127,7 @@ export const updateProduct = async (req = request, res = response, next) => {
 
     const { name, description, thumbnail, value, stock, _id, category } = product.toObject()
 
-    index.saveObject({
+    await index.saveObject({
       name,
       description,
       thumbnail,
@@ -143,7 +135,7 @@ export const updateProduct = async (req = request, res = response, next) => {
       stock,
       category,
       objectID: _id
-    }).wait()
+    })
 
     res.status(201).json({
       ok: true,

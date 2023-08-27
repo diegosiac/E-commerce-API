@@ -2,7 +2,7 @@ import { response } from 'express'
 import jwt from 'jsonwebtoken'
 import config from '../config.js'
 
-const validateAdminProductsJWT = (req, res = response, next) => {
+const validateAdminJWT = (req, res = response, next) => {
   const token = req.header('Authorization')
 
   if (!token) {
@@ -30,4 +30,4 @@ const validateAdminProductsJWT = (req, res = response, next) => {
   next()
 }
 
-export default validateAdminProductsJWT
+export default validateAdminJWT

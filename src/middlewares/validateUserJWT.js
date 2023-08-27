@@ -7,7 +7,7 @@ export const validateUserJWT = (req, res = response, next) => {
   if (!token) {
     return res.status(401).json({
       ok: false,
-      msg: 'x-portal token is missing'
+      msg: 'x-token token is missing'
     })
   }
 

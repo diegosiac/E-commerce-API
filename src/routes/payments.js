@@ -37,8 +37,8 @@ router.post('/', validateUserJWT,
       .notEmpty().withMessage('Locality is required')
       .isLength({ max: 40 }).withMessage('Locality must be at least 40 characters'),
     body('address.sublocality')
-      .notEmpty().withMessage('Sublocality is required')
-      .isLength({ max: 40 }).withMessage('Sublocality must be at least 40 characters'),
+      .notEmpty().withMessage('sublocality is required')
+      .isLength({ max: 40 }).withMessage('sublocality must be at least 40 characters'),
     validateFields
   ],
   createPayment
@@ -47,6 +47,7 @@ router.post('/', validateUserJWT,
 router.get('/execute_payment',
   [
     query('token', 'The token is required').notEmpty(),
+    query('PayerID', 'The PayerID is required').notEmpty(),
     validateFields
   ],
   executePayment

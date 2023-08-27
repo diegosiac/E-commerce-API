@@ -18,8 +18,8 @@ export const createUser = async (req, res = response, next) => {
 
     const user = new User(req.body)
 
-    const passwordhash = await bcrypt.hash(password, 10)
-    user.password = passwordhash
+    const passwordHash = await bcrypt.hash(password, 10)
+    user.password = passwordHash
     const token = await generateAuthJWT({ email: user.email, name: user.name })
 
     await user.save()
@@ -90,13 +90,15 @@ export const loginUser = async (req, res = response, next) => {
 export const revalidateToken = async (req, res = response, next) => {
   const { name, email } = req
   try {
-    const token = await generateAuthJWT({ name, email })
     const user = await User.findOne({ email })
+
     const products = await getUpdatedProducts(user.basket)
 
     user.basket = products
 
     await user.save()
+
+    const token = await generateAuthJWT({ name, email })
 
     res.status(200).json({
       ok: true,
@@ -129,8 +131,8 @@ export const createAdminUser = async (req, res = response, next) => {
 
     const userAdmin = new UserAdmin(req.body)
 
-    const passwordhash = await bcrypt.hash(password, 10)
-    userAdmin.password = passwordhash
+    const passwordHash = await bcrypt.hash(password, 10)
+    userAdmin.password = passwordHash
 
     const token = await generateAdminJWT(userAdmin.id, userAdmin.email)
 

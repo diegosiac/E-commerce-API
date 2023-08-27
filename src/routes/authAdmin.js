@@ -8,6 +8,15 @@ const router = Router()
 
 router.use(validateAdminRegister)
 
+router.post('/',
+  [
+    check('email', 'Email is required').isEmail(),
+    check('password', 'The password must be 6 characters').isLength({ min: 6 }),
+    validateFields
+  ],
+  revalidateTokenAdmin
+)
+
 router.post('/new',
   [
     check('name', 'Name is required').isString(),
@@ -16,15 +25,6 @@ router.post('/new',
     validateFields
   ],
   createAdminUser
-)
-
-router.post('/',
-  [
-    check('email', 'Email is required').isEmail(),
-    check('password', 'The password must be 6 characters').isLength({ min: 6 }),
-    validateFields
-  ],
-  revalidateTokenAdmin
 )
 
 export default router

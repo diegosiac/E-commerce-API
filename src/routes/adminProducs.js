@@ -1,13 +1,13 @@
 import { Router } from 'express'
 import { check, query } from 'express-validator'
 import { createProduct, deleteProduct, updateProduct } from '../controllers/products.js'
-import validateAdminProductsJWT from '../middlewares/validateAdminProductsJWT.js'
+import validateAdminJWT from '../middlewares/validateAdminJWT.js'
 import validateFields from '../middlewares/validateFields.js'
 import { isValidCategory, isValidID } from '../helpers/index.js'
 
 const router = Router()
 
-router.use(validateAdminProductsJWT)
+router.use(validateAdminJWT)
 
 router.post('/',
   [

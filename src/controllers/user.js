@@ -9,7 +9,7 @@ export const updateBasket = async (req, res = response, next) => {
   try {
     const user = await User.findOne({ email })
 
-    user.basket = body
+    user.basket = body.newBasket
 
     await user.save()
 
@@ -56,12 +56,17 @@ export const addProductBasket = async (req, res = response, next) => {
 }
 
 export const consultOrder = async (req = request, res = response, next) => {
-  const { email } = req
+  const { email, query } = req
 
   try {
-    const order = await consultTransaction({ orderId: req.query.orderId })
+    const order = await consultTransaction({ orderId: query.orderId })
 
-    if (!order) return res.status(404).json({ ok: false, msg: 'No order found' })
+    if (!order) {
+      return res.status(404).json({
+        ok: false,
+        msg: 'No order found'
+      })
+    }
 
     if (order.buyer_email !== email) {
       return res.status(403).json({
@@ -70,7 +75,7 @@ export const consultOrder = async (req = request, res = response, next) => {
       })
     }
 
-    const newOrder = {
+    const orderDetails = {
       address: order.address,
       amount: order.amount,
       dateShop: order.createdAt,
@@ -82,7 +87,7 @@ export const consultOrder = async (req = request, res = response, next) => {
     res.status(200).json({
       ok: true,
       user: {
-        order: newOrder
+        order: orderDetails
       }
     })
   } catch (error) {

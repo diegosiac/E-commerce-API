@@ -1,6 +1,5 @@
 export * from './isValidCategory.js'
 export * from './isValidID.js'
-export * from './isContainIDorTitle.js'
 export * from './transactions.js'
 export * from './createTokenPPL.js'
 export * from './statusTransaction.js'

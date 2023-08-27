@@ -62,7 +62,8 @@ export const PucharseUserSchema = new Schema({
       type: String,
       required: true
     }
-  }
+  },
+  _id: Schema.Types.ObjectId
 })
 
 PucharseUserSchema.method('toJSON', function () {

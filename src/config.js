@@ -14,9 +14,21 @@ const dbCnn = () => {
   }
 }
 
+const algoliaENV = () => {
+  const env = process.env.NODE_ENV
+
+  if (env === 'production') {
+    return process.env.ALGOLIA_INDEX_NAME_PROD
+  } else {
+    return process.env.ALGOLIA_INDEX_NAME_DEV
+  }
+}
+
 export default {
   NODE_ENV: process.env.NODE_ENV,
   PORT: process.env.PORT,
+  URL_BACK: process.env.URL_BACK,
+  URL_FRONT: process.env.URL_FRONT,
   DB_CNN: dbCnn(),
   API_PAYPAL: 'https://api-m.sandbox.paypal.com',
   API_TOKEN_PAYPAL: 'https://api-m.sandbox.paypal.com/v1/oauth2/token',
@@ -27,7 +39,7 @@ export default {
   SECRET_AUTH_ADMIN: process.env.SECRET_AUTH_ADMIN,
   ALGOLIA_APP_ID: process.env.ALGOLIA_APP_ID,
   ALGOLIA_API_KEY: process.env.ALGOLIA_API_KEY,
-  ALGOLIA_INDEX_NAME: process.env.ALGOLIA_INDEX_NAME,
+  ALGOLIA_INDEX_NAME: algoliaENV(),
   GOOGLE_KEY: process.env.GOOGLE_KEY,
   GOOGLE_URL: process.env.GOOGLE_URL
 }
