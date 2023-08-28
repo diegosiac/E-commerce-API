@@ -11,8 +11,8 @@ describe('Payments route testing', () => {
   let db, userData, products, mockAxios
 
   beforeAll(async () => {
-    mockAxios = new MockAdapter(axios)
     db = await dbConnection()
+    mockAxios = new MockAdapter(axios)
     userData = await createAccount(user)
     products = await setProductBasket({ email: userData.email, products: [oneProduct] })
   })
@@ -82,7 +82,7 @@ describe('Payments route testing', () => {
             value: 'address.firstName'
           },
           'address.lastName': {
-            msg: 'Name is required',
+            msg: 'lastName is required',
             location: 'body',
             value: 'address.lastName'
           },
