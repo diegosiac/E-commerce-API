@@ -3,6 +3,7 @@ import { body, query } from 'express-validator'
 import { validateUserJWT } from '../middlewares/validateUserJWT.js'
 import validateFields from '../middlewares/validateFields.js'
 import { addProductBasket, consultOrder, updateBasket } from '../controllers/user.js'
+import { isValidID } from '../helpers/index.js'
 
 const router = Router()
 
@@ -22,7 +23,7 @@ router.put('/update/add',
   [
     body('id')
       .notEmpty().withMessage('id cannot be empty')
-      .isString().withMessage('id must be an string'),
+      .custom(isValidID),
     validateFields
   ],
   addProductBasket

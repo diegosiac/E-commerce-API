@@ -29,6 +29,14 @@ export const addProductBasket = async (req, res = response, next) => {
 
   try {
     const products = await Product.findById(body.id)
+
+    if (!products) {
+      return res.status(404).json({
+        ok: false,
+        msg: 'There is no product with the provided id'
+      })
+    }
+
     const { name, thumbnail, value, stock, id, description, category } = products
 
     const newProduct = {

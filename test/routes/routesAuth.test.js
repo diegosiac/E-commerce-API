@@ -91,7 +91,7 @@ describe('Auth route testing', () => {
 
       expect(body).toEqual({
         ok: false,
-        msg: 'Un usuario ya existe con ese usuario'
+        msg: 'Un usuario ya existe con ese correo'
       })
     })
   })

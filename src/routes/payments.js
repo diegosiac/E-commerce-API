@@ -14,7 +14,7 @@ router.post('/', validateUserJWT,
       .matches(/^[\p{L}´¨()\-\s]+$/u).withMessage('The name is invalid')
       .isLength({ max: 50 }).withMessage('The name must have a maximum of 50 characters'),
     body('address.lastName')
-      .notEmpty().withMessage('Name is required')
+      .notEmpty().withMessage('lastName is required')
       .matches(/^[\p{L}´¨()\-\s]+$/u).withMessage('The name is invalid')
       .isLength({ max: 50 }).withMessage('The name must have a maximum of 50 characters'),
     body('address.address1')

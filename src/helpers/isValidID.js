@@ -1,4 +1,12 @@
+import mongoose from 'mongoose'
+
+const ObjectId = mongoose.Types.ObjectId
 
 export const isValidID = (value) => {
-  return value.length === 12 || value.length === 24
+  const validId = ObjectId.isValid(value)
+  const equalId = (String)(new ObjectId(value)) === value
+
+  if (validId && equalId) return true
+
+  return false
 }

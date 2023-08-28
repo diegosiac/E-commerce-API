@@ -12,7 +12,7 @@ export const createUser = async (req, res = response, next) => {
     if (findUser) {
       return res.status(400).json({
         ok: false,
-        msg: 'Un usuario ya existe con ese usuario'
+        msg: 'Un usuario ya existe con ese correo'
       })
     }
 
