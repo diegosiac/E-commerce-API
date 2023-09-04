@@ -8,7 +8,7 @@ Esta API ha sido desarrollada para facilitar la implementación y gestión de op
 - **Gestión de Productos:** Agrega, actualiza y elimina productos de manera sencilla a través de endpoints intuitivos. Cada producto puede incluir información detallada, como nombre, descripción, precio, disponibilidad, y más. 
 - **Carrito de Compras:** Permite a los usuarios agregar productos a su carrito, visualizar el contenido y proceder al proceso de pago. Mantén un seguimiento de los artículos seleccionados y facilita la conversión. 
 - **Procesamiento de Pedidos:** Administra el ciclo de vida de los pedidos, desde la creación hasta el envío. Proporciona información actualizada sobre el estado del pedido para mantener a tus clientes informados. 
-- **Autenticación y Seguridad:** Protege los datos sensibles de tus clientes y de tu negocio mediante autenticación segura. Implementa prácticas recomendadas para garantizar la privacidad de la información.
+- **Autenticación y Seguridad:** Protege los datos sensibles de tus clientes y de tu negocio mediante autenticación segura. Implementa prácticas recomendadas con JWT(JSON WEB TOKEN) para garantizar la privacidad de la información.
 
 ## Demo
 
